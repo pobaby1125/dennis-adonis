@@ -19,8 +19,41 @@ const Route = use('Route')
 
 Route.on('/').render('welcome')
 
-Route.get('/hello', 'HelloController.render')
+// Route.post('/posts', ({request})=>request.post())
+// Route.post('/posts', ({request})=>request.collect(['title','content']))
+// Route.post('/posts',({request})=>request.headers())
+// Route.get('/posts',({ request, response })=>{
+//      // response.cookie('theme','dark')
+//      return request.cookie('themes','light')
+//      // return request.cookies()
+// })
 
-Route.get('/posts', async()=>{
-    return await Database.table('posts').select('*')
+/*
+// 异步响应
+const delay = (data, time) => {
+     return new Promise( (resolve, reject) => {
+          setTimeout( () =>{
+               resolve(data)
+          }, time )
+     } )
+}
+
+Route.get('/posts', async({response}) => {
+     const data = await delay(
+          'List of posts.',
+          3000
+     )
+
+     return data
 })
+*/
+
+
+Route.get('/list-of-food-list', ({response})=>{
+     response.route('list-of-posts', {category:'food'})
+})
+
+Route.get('/posts/:category?', ({params})=>{
+     return `List of ${params.category || 'default'} posts.`
+})
+.as('list-of-posts')
