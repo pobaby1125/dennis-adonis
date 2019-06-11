@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    {{ style('css/main')}}
+    {{ script('js/main') }}
+    <title>{{ pageTitle || iPaner }}</title>
+</head>
+<body style="background:url({{assetsUrl('splash.png')}})">
+    <div class="container">
+        <div class="header">
+            @section('header')
+                <small>__headerSection__</small>
+            @endsection
+        </div>
+    </div>
+    <div class="content">
+
+        <dl>
+            <dt><h3>请求相关信息</h3></dt>
+            <dd>URL: {{request.url()}}</dd>
+            <dd>OriginalUrl: {{request.originalUrl()}}</dd>
+            <dd>Method: {{request.method()}}</dd>
+            <dd>Protocol: {{request.protocol()}}</dd>
+        </dl>
+
+        @section('content')
+            <p>There is no content yet.</p>
+        @endsection
+    </div>
+
+    @include('partials.footer')
+</body>
+</html>

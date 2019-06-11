@@ -1,0 +1,20 @@
+<h1>{{ pageTitle || 'Untitled' }}</h1>
+
+@if(user.name)
+{{user.name}}
+@else
+Login / Signup
+@endif
+
+<ul>
+@each(entity in entities)
+    <li>
+        <p>【{{$loop.index}}】 {{entity.title}} : {{entity.content}}</p> 
+        <p>isFirst:{{$loop.first}}</p> 
+        <p>isLast:{{$loop.last}}</p> 
+        <p>Total:{{$loop.total}}</p> 
+        <p>isOdd:{{$loop.isOdd}}</p> 
+        <p>isEven:{{$loop.isEven}}</p> 
+    </li>
+@endeach
+</ul>
