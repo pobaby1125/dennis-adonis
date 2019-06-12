@@ -21,3 +21,4 @@ Route.on('/').render('welcome')
 
 Route.resource('posts','PostController')
 Route.resource('users','UserController')
+Route.resource('profiles','ProfileController')
