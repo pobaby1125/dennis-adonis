@@ -1,0 +1,119 @@
+'use strict'
+
+/** @typedef {import('@adonisjs/framework/src/Request')} Request */
+/** @typedef {import('@adonisjs/framework/src/Response')} Response */
+/** @typedef {import('@adonisjs/framework/src/View')} View */
+
+const Database = use('Database')
+
+/**
+ * Resourceful controller for interacting with posts
+ */
+class PostController {
+  /**
+   * Show a list of all posts.
+   * GET posts
+   *
+   * @param {object} ctx
+   * @param {Request} ctx.request
+   * @param {Response} ctx.response
+   * @param {View} ctx.view
+   */
+  async index ({ request, response, view }) {
+  }
+
+  /**
+   * Render a form to be used for creating a new post.
+   * GET posts/create
+   *
+   * @param {object} ctx
+   * @param {Request} ctx.request
+   * @param {Response} ctx.response
+   * @param {View} ctx.view
+   */
+  async create ({ request, response, view }) {
+    return view.render('post.create')
+  }
+
+  /**
+   * Create/save a new post.
+   * POST posts
+   *
+   * @param {object} ctx
+   * @param {Request} ctx.request
+   * @param {Response} ctx.response
+   */
+  async store ({ request, response }) {
+    const newPost = request.only(['title','content'])
+    const postID = await Database.insert(newPost).into('posts')
+    console.log('postID:', postID);
+    return response.redirect(`/posts/${postID[0]}`)
+  }
+
+  /**
+   * Display a single post.
+   * GET posts/:id
+   *
+   * @param {object} ctx
+   * @param {Request} ctx.request
+   * @param {Response} ctx.response
+   * @param {View} ctx.view
+   */
+  async show ({ params, view }) {
+    const post = await Database
+      .from('posts')
+      .where('id', params.id)
+      .first()
+
+    return view.render('post.show', {post})  
+  }
+
+  /**
+   * Render a form to update an existing post.
+   * GET posts/:id/edit
+   *
+   * @param {object} ctx
+   * @param {Request} ctx.request
+   * @param {Response} ctx.response
+   * @param {View} ctx.view
+   */
+  async edit ({ params, view }) {
+    const post = await Database
+      .from('posts')
+      .where('id', params.id)
+      .first()
+    
+    return view.render('post.edit', {post})  
+  }
+
+  /**
+   * Update post details.
+   * PUT or PATCH posts/:id
+   *
+   * @param {object} ctx
+   * @param {Request} ctx.request
+   * @param {Response} ctx.response
+   */
+  async update ({ params, request, response }) {
+    const updatedPost = request.only(['title','content'])
+    await Database
+      .table('posts')
+      .where('id', params.id)
+      .update(updatedPost)
+    
+    return response.redirect(`/posts/${params.id}`)  
+  }
+
+  /**
+   * Delete a post with id.
+   * DELETE posts/:id
+   *
+   * @param {object} ctx
+   * @param {Request} ctx.request
+   * @param {Response} ctx.response
+   */
+  async destroy ({ params, request, response }) {
+  }
+}
+
+module.exports = PostController
