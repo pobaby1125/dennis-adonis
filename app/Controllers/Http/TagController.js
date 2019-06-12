@@ -4,16 +4,15 @@
 /** @typedef {import('@adonisjs/framework/src/Response')} Response */
 /** @typedef {import('@adonisjs/framework/src/View')} View */
 
-const Database = use('Database')
-const Post = use('App/Models/Post')
+const Tag = use('App/Models/Tag')
 
 /**
- * Resourceful controller for interacting with posts
+ * Resourceful controller for interacting with tags
  */
-class PostController {
+class TagController {
   /**
-   * Show a list of all posts.
-   * GET posts
+   * Show a list of all tags.
+   * GET tags
    *
    * @param {object} ctx
    * @param {Request} ctx.request
@@ -21,13 +20,11 @@ class PostController {
    * @param {View} ctx.view
    */
   async index ({ request, response, view }) {
-    const posts = await Post.all()
-    return view.render('post.index', {posts: posts.toJSON()})
   }
 
   /**
-   * Render a form to be used for creating a new post.
-   * GET posts/create
+   * Render a form to be used for creating a new tag.
+   * GET tags/create
    *
    * @param {object} ctx
    * @param {Request} ctx.request
@@ -35,26 +32,22 @@ class PostController {
    * @param {View} ctx.view
    */
   async create ({ request, response, view }) {
-    return view.render('post.create')
   }
 
   /**
-   * Create/save a new post.
-   * POST posts
+   * Create/save a new tag.
+   * POST tags
    *
    * @param {object} ctx
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
   async store ({ request, response }) {
-    const newPost = request.only(['title','content'])
-    const post = await Post.create(newPost)
-    return response.redirect(`/posts/${post.id}`)
   }
 
   /**
-   * Display a single post.
-   * GET posts/:id
+   * Display a single tag.
+   * GET tags/:id
    *
    * @param {object} ctx
    * @param {Request} ctx.request
@@ -62,18 +55,18 @@ class PostController {
    * @param {View} ctx.view
    */
   async show ({ params, request, response, view }) {
-    const post = await Post.findOrFail(params.id)
-    const tags = await post
-      .tags()
-      .select('id', 'title')
+    const tag = await Tag.findOrFail(params.id)
+    const posts = await tag
+      .posts()
+      .select('id','title','content')
       .fetch()
 
-    return view.render('post.show',{post, tags:tags.toJSON()})
+    return view.render('tag.show',{ tag, posts:posts.toJSON() })
   }
 
   /**
-   * Render a form to update an existing post.
-   * GET posts/:id/edit
+   * Render a form to update an existing tag.
+   * GET tags/:id/edit
    *
    * @param {object} ctx
    * @param {Request} ctx.request
@@ -81,37 +74,29 @@ class PostController {
    * @param {View} ctx.view
    */
   async edit ({ params, request, response, view }) {
-    const post = await Post.findOrFail(params.id)
-    return view.render('post.edit', { post: post.toJSON() })
   }
 
   /**
-   * Update post details.
-   * PUT or PATCH posts/:id
+   * Update tag details.
+   * PUT or PATCH tags/:id
    *
    * @param {object} ctx
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
   async update ({ params, request, response }) {
-    const updatedPost = request.only(['title','content'])
-    const post = await Post.findOrFail(params.id)
-    post.merge(updatedPost)
-    post.save()
   }
 
   /**
-   * Delete a post with id.
-   * DELETE posts/:id
+   * Delete a tag with id.
+   * DELETE tags/:id
    *
    * @param {object} ctx
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
   async destroy ({ params, request, response }) {
-    const post = await Post.findOrFail(params.id)
-    post.delete()
   }
 }
 
-module.exports = PostController
+module.exports = TagController
