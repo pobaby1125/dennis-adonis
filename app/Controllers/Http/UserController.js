@@ -5,6 +5,7 @@
 /** @typedef {import('@adonisjs/framework/src/View')} View */
 
 const User = use('App/Models/User')
+const { validate, validateAll } = use('Validator')
 
 /**
  * Resourceful controller for interacting with users
@@ -32,6 +33,7 @@ class UserController {
    * @param {View} ctx.view
    */
   async create ({ request, response, view }) {
+    return view.render('user.create')
   }
 
   /**
@@ -42,7 +44,33 @@ class UserController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async store ({ request, response }) {
+  async store ({ request, response, session }) {
+    
+    const rules ={
+      username: 'required|unique:users',
+      email: 'required|email|unique:users',
+      password: 'required|min:6|max:30'
+    }
+
+    const validation = await validateAll( request.all(), rules )
+
+    console.log(validation);
+
+    if (validation.fails())
+    {
+      session
+        .withErrors(validation.messages())
+        .flashAll()
+
+      return response.redirect('back')
+    }
+
+
+    const newUser = request.only(['username', 'password', 'email'])
+    const user = await User
+      .create(newUser)
+
+    return response.redirect(`/users/${ user.id }`)
   }
 
   /**
