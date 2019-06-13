@@ -1,0 +1,30 @@
+@layout('layout.main')
+
+@section('content')
+    <div class="container">
+        <h1 class="my-5 text-center display-4">{{ user.username }}</h1>
+        <div class="mb-5 text-center">
+            <a href="https://github.com/{{ user.profile.github }}" class="text-muted">
+                <i class="fa fa-github" aria-hidden="true"></i>
+            </a>
+        </div>
+        <div class="list-group">
+            @if(user.posts)
+                @each(post in user.posts)
+                    <div class="list-group-item">
+                        <div class="p-2">
+                            <div>
+                                <a href="/posts/{{ post.id }}}">
+                                    <h5>{{ post.title }}</h5>
+                                </a>
+                            </div>
+                            <div>
+                                {{ post.content }}
+                            </div>
+                        </div>
+                    </div>
+                @endeach
+            @endif
+        </div>
+    </div>
+@endsection
