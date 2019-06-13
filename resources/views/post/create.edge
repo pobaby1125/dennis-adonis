@@ -4,7 +4,7 @@
     <div class="container">
         <h3 class="mt-5 mb-4">Add New Post</h3>
         <form action="{{ route('PostController.store') }}" method="POST">
-            @!component('components.form.input',{
+            @!component('components.form.input', {
                 name:'title',
                 label:'Title',
                 placeholder: 'Enter title here',
@@ -12,16 +12,15 @@
                 hasErrorFor,
                 old
             })
-            
-            <div class="form-group">
-                <label for="content">Content</label>
-                <textarea 
-                    name="content" 
-                    cols="30" 
-                    rows="10" 
-                    class="form-control" 
-                    placeholder="Write something amazing"></textarea>
-            </div>
+
+            @!component('components.form.textarea', {
+                name:'content',
+                label:'Content',
+                placeholder: 'Write something amazing',
+                getErrorFor,
+                hasErrorFor,
+                old
+            })
 
             <div class="form-group">
                 <span class="px-3 text-muted"><i class="fa fa-user" aria-hidden="true"></i></span>
