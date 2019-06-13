@@ -10,7 +10,8 @@
                         name="{{ name }}" 
                         value="{{ item[value] }}"
                         id="{{ name }}-{{ item.id }}" 
-                        class="form-check-input">
+                        class="form-check-input"
+                        {{ item.checked ? 'checked' : '' }}>
                     <label for="{{ name }}-{{ item.id }}" class="form-check-label">
                         {{ item[label] }}
                     </label>    

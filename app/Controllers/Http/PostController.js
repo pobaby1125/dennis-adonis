@@ -125,8 +125,39 @@ class PostController {
    * @param {View} ctx.view
    */
   async edit ({ params, request, response, view }) {
-    const post = await Post.findOrFail(params.id)
-    return view.render('post.edit', { post: post.toJSON() })
+    const _post = await Post.findOrFail(params.id)
+
+    const _user = await User.all()
+    const user = _user.toJSON()
+
+    const _tags = await Tag.all()
+    const tags = _tags.toJSON()     // 作为复选框选项
+
+    await _post.load('tags')        // 把标签选项追加到post中
+    const post = _post.toJSON()
+    const postTagIds = post.tags.map(tag=>tag.id)    // 得到post拥有的标签
+
+    const tagItems = tags.map( (tag) => {
+       if ( postTagIds.includes(tag.id) ){
+         tag.checked = true
+       }
+
+       return tag
+    })
+
+    const userItems = user.map( (user) => {
+      if ( user.id == post.user_id ){
+        user.checked = true
+      }
+
+      return user
+    })
+
+    return view.render('post.edit', { 
+      post, 
+      users: userItems,
+      tags: tagItems
+    })
   }
 
   /**
