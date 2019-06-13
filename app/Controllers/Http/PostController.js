@@ -7,6 +7,7 @@
 const Database = use('Database')
 const Post = use('App/Models/Post')
 const User = use('App/Models/User')
+const Tag  = use('App/Models/Tag')
 
 /**
  * Resourceful controller for interacting with posts
@@ -47,7 +48,8 @@ class PostController {
    */
   async create ({ request, response, view }) {
     const users = await User.all()
-    return view.render('post.create', { users: users.toJSON() })
+    const tags  = await Tag.all()
+    return view.render('post.create', { users: users.toJSON(), tags: tags.toJSON() })
   }
 
   /**
@@ -59,12 +61,17 @@ class PostController {
    * @param {Response} ctx.response
    */
   async store ({ request, response }) {
-    const newPost = request.only(['title','content','user_id'])
-
-    const user = await User.find(newPost.user_id)
+    const newPost = request.only(['title','content'])
+    const tags = request.input('tags')
+    
+    const user = await User.find(request.input('user_id'))
     const post = await user
       .posts()
       .create(newPost)
+
+    await post
+      .tags()
+      .attach(tags)
 
     // const post = await Post.create(newPost)
 
