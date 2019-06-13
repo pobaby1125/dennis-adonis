@@ -6,6 +6,7 @@
 
 const Database = use('Database')
 const Post = use('App/Models/Post')
+const User = use('App/Models/User')
 
 /**
  * Resourceful controller for interacting with posts
@@ -45,7 +46,8 @@ class PostController {
    * @param {View} ctx.view
    */
   async create ({ request, response, view }) {
-    return view.render('post.create')
+    const users = await User.all()
+    return view.render('post.create', { users: users.toJSON() })
   }
 
   /**
@@ -57,8 +59,15 @@ class PostController {
    * @param {Response} ctx.response
    */
   async store ({ request, response }) {
-    const newPost = request.only(['title','content'])
-    const post = await Post.create(newPost)
+    const newPost = request.only(['title','content','user_id'])
+
+    const user = await User.find(newPost.user_id)
+    const post = await user
+      .posts()
+      .create(newPost)
+
+    // const post = await Post.create(newPost)
+
     return response.redirect(`/posts/${post.id}`)
   }
 
