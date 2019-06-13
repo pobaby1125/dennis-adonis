@@ -24,6 +24,10 @@ Route
     .as('login')
 
 Route
+    .post('logout', 'AuthController.logout')
+    .as('logout')    
+
+Route
     .post('auth', 'AuthController.auth')
     .as('auth')    
 
