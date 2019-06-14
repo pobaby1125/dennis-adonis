@@ -22,7 +22,11 @@ Route.on('/').render('welcome')
 Route.resource('files', 'FileController')
 Route
     .get('upload', 'FileController.create')
-    .as('upload')    
+    .as('upload')
+
+Route
+    .get('files/:id/download', 'FileController.download')
+    .as('files.download')    
 
     
 Route

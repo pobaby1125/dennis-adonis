@@ -101,9 +101,6 @@ class FileController {
     const _file = await Files.find( params.id )
     const file =  _file.toJSON()
 
-console.log(file);
-
-
     return view.render('file.show', { file })
   }
 
@@ -139,6 +136,15 @@ console.log(file);
    * @param {Response} ctx.response
    */
   async destroy ({ params, request, response }) {
+  }
+
+  /**
+   *  Download file
+   */
+  async download({ params, response }){
+    const file = await Files.find(params.id)
+    const filename = `${ Helpers.publicPath('uploads') }/${ file.file_name }`
+    response.attachment( filename, file.client_name )
   }
 }
 
