@@ -5,6 +5,7 @@
 /** @typedef {import('@adonisjs/framework/src/View')} View */
 
 const Helpers = use('Helpers')
+const Files   = use('App/Models/File')
 
 /**
  * Resourceful controller for interacting with files
@@ -66,6 +67,14 @@ class FileController {
 
       return response.redirect('back')
     }
+
+    Files.create({
+      client_name: file.clientName,
+      file_name: fileName,
+      type: file.type,
+      subtype: file.subtype,
+      size: file.size
+    })
 
     session.flash({
       type:'success',
