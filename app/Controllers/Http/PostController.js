@@ -25,19 +25,20 @@ class PostController {
    * @param {View} ctx.view
    */
   async index ({ request, response, view }) {
+
+    const page = request.input('page')
+    const prePage = 3;
+
     const posts = await Post
       .query()
       .with('user', (builder)=>{
         builder.select('id','username')
       })
       .with('user.profile')
-      .fetch()
+      .paginate( page, prePage)
 
-      console.log(posts.toJSON());
-      
-
-    return view.render('post.index', {posts: posts.toJSON()})
-  }
+    return view.render( 'post.index', { ...posts.toJSON() } )
+  } 
 
   /**
    * Render a form to be used for creating a new post.
