@@ -19,6 +19,12 @@ const Route = use('Route')
 
 Route.on('/').render('welcome')
 
+Route.resource('files', 'FileController')
+Route
+    .get('upload', 'FileController.create')
+    .as('upload')    
+
+    
 Route
     .get('login', 'AuthController.login')
     .as('login')
@@ -35,6 +41,7 @@ Route
     .get('register', 'UserController.create')
     .as('signup')
 
+
 Route
     .get( 'users/create', ({response}) => response.route('signup'))    
 
@@ -42,3 +49,4 @@ Route.resource('posts','PostController')
 Route.resource('users','UserController')
 Route.resource('profiles','ProfileController')
 Route.resource('tags','TagController')
+
