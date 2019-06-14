@@ -27,7 +27,7 @@ class PostController {
   async index ({ request, response, view }) {
 
     const page = request.input('page')
-    const prePage = 3;
+    const prePage = 2;
 
     const posts = await Post
       .query()
