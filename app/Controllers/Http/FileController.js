@@ -56,14 +56,14 @@ class FileController {
     // 获取上传文件
     const file = request.file('file', {
       types: ['image', 'video'],
-      size: '20mb'
+      size: '200mb'
     })
 
     // 移动上传的文件到 /public/uploads
     const fileName = `${ new Date().getTime() }.${ file.subtype }`
-    await file.move( Helpers.publicPath('uploads',{
+    await file.move( Helpers.publicPath('uploads'), {
       name: fileName
-    }) )
+    } )
 
     if (!file.moved()){
       const error = file.error()
@@ -102,6 +102,13 @@ class FileController {
    * @param {View} ctx.view
    */
   async show ({ params, request, response, view }) {
+    const _file = await Files.find( params.id )
+    const file =  _file.toJSON()
+
+console.log(file);
+
+
+    return view.render('file.show', { file })
   }
 
   /**

@@ -14,7 +14,7 @@
                 @each(file in files)
                     <tr>
                         <td>
-                            <a href="{{ route('file.show', { id: file.id }) }}">{{ file.client_name }}</a>
+                            <a href="{{ route('files.show', { id:file.id }) }}">{{ file.client_name }}</a>
                         </td>
                         <td>{{ file.type }}</td>
                         <td>{{ file.size }}</td>
