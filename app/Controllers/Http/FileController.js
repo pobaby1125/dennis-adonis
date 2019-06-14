@@ -6,6 +6,7 @@
 
 const Helpers = use('Helpers')
 const Files   = use('App/Models/File')
+const Drive   = use("Drive")
 
 /**
  * Resourceful controller for interacting with files
@@ -114,6 +115,8 @@ class FileController {
    * @param {View} ctx.view
    */
   async edit ({ params, request, response, view }) {
+    const file = await Files.find( params.id )
+    return view.render('file.edit', {file} )
   }
 
   /**
@@ -124,7 +127,37 @@ class FileController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async update ({ params, request, response }) {
+  async update ({ params, request, response, session }) {
+    const fileData = await Files.find( params.id )
+    const { client_name, file_name } = request.all()
+
+    // 文件名不重复
+    if ( fileData.file_name !== file_name ){
+      try{
+        const basePath = Helpers.publicPath('uploads')
+        const originalFilePath = `${ basePath }/${ fileData.file_name }`
+        const filePath = `${ basePath }/${ file_name }`
+        await Drive.move( originalFilePath, filePath )
+      }catch(error){
+        session.flash({
+          type: 'warning',
+          message: error.message
+        })
+
+        return response.redirect('back')
+      }
+    }
+
+    // 更新数据信息
+    fileData.merge({ client_name, file_name })
+    await fileData.save()
+
+    session.flash({
+      type:'success',
+      message: 'Successfully updated.'
+    })
+
+    return response.redirect('back')
   }
 
   /**
