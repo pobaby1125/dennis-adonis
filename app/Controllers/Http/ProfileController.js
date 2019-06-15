@@ -5,6 +5,7 @@
 /** @typedef {import('@adonisjs/framework/src/View')} View */
 
 const Profile = use('App/Models/Profile')
+const { validateAll } = use('Validator')
 
 /**
  * Resourceful controller for interacting with profiles
@@ -76,7 +77,9 @@ class ProfileController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async edit ({ params, request, response, view }) {
+  async edit ({ params, request, response, view, auth }) {
+    await auth.user.load('profile')
+    return view.render('user.settings.profile.edit', { user: auth.user.toJSON() })
   }
 
   /**
@@ -87,7 +90,37 @@ class ProfileController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async update ({ params, request, response }) {
+  async update ({ params, request, response, session, auth }) {
+
+    const rules = {
+      username: `required|unique:users,username,id,${ auth.user.id }`,
+      email: `required|email|unique:users,email,id,${ auth.user.id }`,
+      github: `unique:profiles,github,user_id,${ auth.user.id }`
+    }
+
+    const validation = await validateAll( request.all(), rules )
+
+    if ( validation.fails() ){
+      session
+        .withErrors(validation.messages())
+        .flashAll()
+
+      return response.redirect('back')
+    }
+
+    const { username, email, github } = request.all()
+    auth.user.merge({ username, email })
+    await auth.user.save()
+    await auth.user.profile().update({ github })
+
+    session
+      .flash({
+        type:'success',
+        message: 'Profile successfully updated.'
+      })
+
+    return response.redirect('back')    
+
   }
 
   /**

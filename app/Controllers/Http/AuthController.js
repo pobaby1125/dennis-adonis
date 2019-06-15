@@ -25,6 +25,7 @@ class AuthController {
             password: 'required'
         }
 
+
         const validation = await validateAll(request.all(), rules)
         if ( validation.fails() ){
             session

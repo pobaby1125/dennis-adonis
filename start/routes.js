@@ -19,6 +19,16 @@ const Route = use('Route')
 
 Route.on('/').render('welcome')
 
+Route
+    .group( () =>{
+        Route.get('profile', 'ProfileController.edit').as('profile.edit')
+        Route.post('profile', 'ProfileController.update').as('profile.update')
+        Route.get('password', 'PasswordController.edit').as('password.edit')
+        Route.post('password', 'PasswordController.update').as('password.update')
+    })
+    .prefix('settings')
+    .middleware(['auth'])
+
 Route.resource('files', 'FileController')
 Route
     .get('upload', 'FileController.create')
