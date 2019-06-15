@@ -1,15 +1,17 @@
-@layout('layout.main')
+@layout('layouts.main')
 
 @section('content')
-    <div class="container">
-        <h1 class="mt-5 mb-4 font-weight-light">{{ tag.title }}</h1>
-        @if(posts)
-            @each( post in posts )
-                <h3 class="mt-5 mb-4 font-weight-light">{{post.title}}</h3>
-                <div>
-                    {{post.content}}
-                </div>
-            @endeach
-        @endif
-    </div>
+    @set('pageTitle', tag.title)
+
+    <h1 class="mt-5 mb-4 font-weight-light">{{ tag.title }}</h1>
+    @!component('components.post.list', {
+        items: data
+    })
+    @!component('components.pagination',{
+        total,
+        perPage,
+        page,
+        lastPage
+    })
+
 @endsection

@@ -83,14 +83,24 @@ class UserController {
    * @param {View} ctx.view
    */
   async show ({ params, request, response, view }) {
-    const user = await User.find(params.id)
-    // await user.load('posts')
-    await user.loadMany({
-      posts: builder => builder.select('id', 'title', 'content'),
-      profile: builder => builder.select('github')
-    })
+    const pageNumber = request.input('page', 1)
+    const pageSize   = 3
 
-    return view.render('user.show', { user: user.toJSON() })
+    const user = await User.find(params.id)
+    await user.load('profile')
+
+    const posts = await user
+      .posts()
+      .orderBy('updated_at', 'desc')
+      .with('user')
+      .paginate( pageNumber, pageSize )
+
+    // await user.loadMany({
+    //   posts: builder => builder.select('id', 'title', 'content'),
+    //   profile: builder => builder.select('github')
+    // })
+
+    return view.render('user.show', { user: user.toJSON(), ...posts.toJSON() })
     
     // const {username, email} = user.toJSON()
     // const profile = await user
