@@ -4,6 +4,7 @@
 /** @typedef {import('@adonisjs/framework/src/View')} View */
 
 const Post = use('App/Models/Post')
+const PermissionCheckException = use('App/Exceptions/PermissionCheckException')
 const AdminUserID = 1
 
 class Own {
@@ -27,15 +28,9 @@ class Own {
 
     const own = entity.user_id === auth.user.id
 
-    if ( !own && auth.user.id !== AdminUserID ){
-      session.flash({
-        type: 'danger',
-        message: 'You have no permission to do this.'
-      })
-
-      await session.commit()
-
-      return response.redirect('back')
+    if ( !own && auth.user.id !== AdminUserID )
+    {
+      throw new PermissionCheckException('Permission check exception.', 403)
     }
     
 
