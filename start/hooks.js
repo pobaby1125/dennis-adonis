@@ -49,8 +49,13 @@ hooks.after.providersBooted(() => {
         return pageItems
     })
 
-    View.global( 'parseInt', (value)=>{
+    View.global('parseInt', (value)=>{
         return parseInt(value)
-    } )
+    })
+
+    const Exception = use('Exception')
+    Exception.handle('InvalidSessionException', async( error, {response} )=>{
+        return response.route('login')
+    })
 
 })
