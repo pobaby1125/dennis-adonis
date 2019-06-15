@@ -26,8 +26,11 @@ Route
 
 Route
     .get('files/:id/download', 'FileController.download')
-    .as('files.download')    
+    .as('files.download')
 
+Route
+    .post('share/:type/:id/email', 'ShareController.email')
+    .as('share.email')
     
 Route
     .get('login', 'AuthController.login')
