@@ -11,6 +11,8 @@ const Tag  = use('App/Models/Tag')
 const { validateAll } = use('Validator')
 const Route = use('Route')
 
+const AdminUserID = 1
+
 /**
  * Resourceful controller for interacting with posts
  */
@@ -50,10 +52,18 @@ class PostController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async create ({ request, response, view }) {
-    const users = await User.all()
+  async create ({ request, response, view, auth }) {
+
+    const userItems = [
+      {
+        ...auth.user.toJSON(),
+        checked:true
+      }
+    ]
+
+    // const users = await User.all()
     const tags  = await Tag.all()
-    return view.render('post.create', { users: users.toJSON(), tags: tags.toJSON() })
+    return view.render('post.create', { users: userItems, tags: tags.toJSON() })
   }
 
   /**
@@ -64,7 +74,7 @@ class PostController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async store ({ request, response, session }) {
+  async store ({ request, response, session, auth }) {
 
     const rules = {
       title: 'required',
@@ -85,8 +95,8 @@ class PostController {
     const newPost = request.only(['title','content'])
     const tags = request.input('tags')
     
-    const user = await User.find(request.input('user_id'))
-    const post = await user
+    // const user = await User.find(request.input('user_id'))
+    const post = await auth.user
       .posts()
       .create(newPost)
 
@@ -96,7 +106,7 @@ class PostController {
 
     // const post = await Post.create(newPost)
 
-    return response.redirect(`/posts/${post.id}`)
+    return response.route('posts.show', { id: post.id })  
   }
 
   /**
@@ -127,7 +137,7 @@ class PostController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async edit ({ params, request, response, view }) {
+  async edit ({ params, request, response, view, auth }) {
     const _post = await Post.findOrFail(params.id)
 
     const _user = await User.all()
@@ -136,7 +146,7 @@ class PostController {
     const _tags = await Tag.all()
     const tags = _tags.toJSON()     // 作为复选框选项
 
-    await _post.load('tags')        // 把标签选项追加到post中
+    await _post.loadMany(['tags','user'])        // 把标签选项追加到post中
     const post = _post.toJSON()
     const postTagIds = post.tags.map(tag=>tag.id)    // 得到post拥有的标签
 
@@ -148,13 +158,25 @@ class PostController {
        return tag
     })
 
-    const userItems = user.map( (user) => {
-      if ( user.id == post.user_id ){
-        user.checked = true
-      }
+    let userItems = []
 
-      return user
-    })
+    userItems = [
+      {
+        ...post.user,
+        checked:true
+      }
+    ]
+
+    // 如果是管理员，则可编辑作者
+    if ( auth.user.id === AdminUserID ){
+      userItems = user.map( (user) => {
+        if ( user.id == post.user_id ){
+          user.checked = true
+        }
+  
+        return user
+      })
+    }
 
     return view.render('post.edit', { 
       post, 
@@ -171,16 +193,19 @@ class PostController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async update ({ params, request, response, session }) {
+  async update ({ params, request, response, session, auth }) {
     const { title, content, user_id, tags } = request.all()
     // const updatedPost = request.only(['title','content'])
 
     const post = await Post.findOrFail(params.id)
     post.merge({title, content})
     await post.save()
-  
-    const user = await User.find(user_id)
-    await post.user().associate(user)
+
+    if ( auth.user.id == AdminUserID )
+    {
+      const user = await User.find(user_id)
+      await post.user().associate(user)
+    }
 
     await post.tags().sync(tags)
 
