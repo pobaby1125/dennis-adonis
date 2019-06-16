@@ -92,6 +92,7 @@ class ProfileController {
    */
   async update ({ params, request, response, session, auth }) {
 
+    /*
     const rules = {
       username: `required|unique:users,username,id,${ auth.user.id }`,
       email: `required|email|unique:users,email,id,${ auth.user.id }`,
@@ -107,6 +108,7 @@ class ProfileController {
 
       return response.redirect('back')
     }
+    */
 
     const { username, email, github } = request.all()
     auth.user.merge({ username, email })

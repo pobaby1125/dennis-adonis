@@ -46,6 +46,7 @@ class UserController {
    */
   async store ({ request, response, session }) {
     
+    /*
     const rules ={
       username: 'required|unique:users',
       email: 'required|email|unique:users',
@@ -64,6 +65,7 @@ class UserController {
 
       return response.redirect('back')
     }
+    */
 
 
     const newUser = request.only(['username', 'password', 'email'])

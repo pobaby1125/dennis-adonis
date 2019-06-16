@@ -20,11 +20,11 @@ class AuthController {
 
     async auth ({ request, response, auth, session }) {
 
+        /*
         const rules = {
             username: 'required',
             password: 'required'
         }
-
 
         const validation = await validateAll(request.all(), rules)
         if ( validation.fails() ){
@@ -34,6 +34,7 @@ class AuthController {
             
             return response.redirect('back')    
         }
+        */
 
         const { username, password } = request.all()
 
