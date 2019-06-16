@@ -23,6 +23,10 @@ Route
     .get('demo/antl', 'AntlDemoController.demo')
 
 Route
+    .post('locale-switch', 'AntlDemoController.localeSwitch')
+    .as('localeSwitch')    
+
+Route
     .group( () =>{
         Route.get('profile', 'ProfileController.edit').as('profile.edit')
         Route

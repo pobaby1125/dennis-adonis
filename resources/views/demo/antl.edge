@@ -4,7 +4,7 @@
     <div class="d-flex align-items-center" style="height:70vh">
         <div class="text-center w-100">
             <span class="text-black-50">
-                {{ locale }}
+                now：{{ locale }}
             </span>
             <p class="display-3 font-weight-light">
                 {{ message }}
@@ -16,6 +16,28 @@
             <p class="display-3 font-weight-light">
                 {{ day }}
             </p>
+
+            <form action="{{ route('localeSwitch') }}" method="POST" id="locale-switch">
+                <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                    <label class="btn btn-secondary{{ locale == 'zh-CN' ? ' active' : '' }}">
+                        <input 
+                            {{ loale == 'zh-CN' ? 'checked' : '' }}
+                            name='locale'
+                            value='zh-CN'
+                            type="radio">中文简体
+                    </label>
+                    <label class="btn btn-secondary{{ locale == 'en-US' ? ' active' : '' }}">
+                            <input 
+                                {{ loale == 'en-US' ? 'checked' : '' }}
+                                name='locale'
+                                value='en-US'
+                                type="radio">English
+                        </label>
+                    </div>
+                </div>
+                {{ csrfField() }}
+            </form>
+
         </div>
     </div>
 @endsection

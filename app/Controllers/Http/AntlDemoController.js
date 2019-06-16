@@ -7,11 +7,19 @@ Formats.add('longWeekDay', {
 })
 
 class AntlDemoController {
-    async demo({ view, antl, locale }) {
 
+    async localeSwitch ({ session, response, request }){
+        session.put('locale', request.input('locale'))
+        return response.redirect('back')
+    }
+
+    async demo({ view, antl, locale, session }) {
+
+        const _locale = session.get('locale') || locale
+        
         return view.render( 'demo.antl', {
             greeting: antl.formatMessage('demo.greeting'),
-            locale,
+            locale: _locale,
             message: antl.formatMessage('demo.message', {
                 gender:'male'
             }),
