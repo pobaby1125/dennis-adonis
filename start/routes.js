@@ -20,6 +20,9 @@ const Route = use('Route')
 Route.on('/').render('welcome')
 
 Route
+    .get('demo/antl', 'AntlDemoController.demo')
+
+Route
     .group( () =>{
         Route.get('profile', 'ProfileController.edit').as('profile.edit')
         Route
