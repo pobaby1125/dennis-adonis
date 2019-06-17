@@ -17,7 +17,9 @@
 const Database = use('Database')
 const Route = use('Route')
 
-Route.on('/').render('welcome')
+Route
+    .get('/', ({response}) => response.route('posts.index') )
+    .as('index')
 
 Route
     .get('demo/antl', 'AntlDemoController.demo')

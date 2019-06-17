@@ -3,7 +3,14 @@
 const { validateAll } = use('Validator')
 
 class AuthController {
-    async login({view, auth, response}){
+    async login({view, auth, response, request, session}){
+
+        const { redirect } = request.get()
+        if (redirect){
+            session.put('redirectUrl', redirect)
+        }
+
+
         try{
             await auth.check()
         }catch(error){
@@ -41,6 +48,12 @@ class AuthController {
         await auth.attempt(username, password)
 
         const user = await auth.getUser()
+
+        const redirectUrl = session.get('redirectUrl')
+        if( redirectUrl ){
+            session.forget('')
+            return response.redirect(redirectUrl)
+        }
 
         return response.route('UserController.show', { id: user.id })
     }

@@ -1,5 +1,5 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand" href="#"><i class="fa fa-align-right" aria-hidden="true"></i> Iamjer</a>
+    <a class="navbar-brand" href="{{ route('index') }}"><i class="fa fa-align-right" aria-hidden="true"></i> Iamjer</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
@@ -42,7 +42,7 @@
             </li>
         @else
             <li class="nav-item mr-3">
-                <a href="{{ route('login') }}" class="nav-link">Login</a>
+                <a href="{{ route('login') }}?redirect={{ url }}" class="nav-link">Login</a>
             </li>
             <li class="nav-item">
                 <a href="{{ route('signup') }}" class="nav-link">Register</a>
