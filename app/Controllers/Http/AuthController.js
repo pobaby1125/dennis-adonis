@@ -1,6 +1,7 @@
 'use strict'
 
 const { validateAll } = use('Validator')
+const Event = use('Event')
 
 class AuthController {
     async login({view, auth, response, request, session}){
@@ -48,6 +49,8 @@ class AuthController {
         await auth.attempt(username, password)
 
         const user = await auth.getUser()
+
+        Event.emit('user.login', user)
 
         const redirectUrl = session.get('redirectUrl')
         if( redirectUrl ){
