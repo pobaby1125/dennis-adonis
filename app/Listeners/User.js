@@ -18,3 +18,7 @@ User.log = async ( user ) => {
             content: 'just logged in.'
         })
 }
+
+User.verification = async(user) => {
+    console.log('Send reg User');
+}

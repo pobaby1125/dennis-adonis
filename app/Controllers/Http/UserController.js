@@ -6,6 +6,7 @@
 
 const User = use('App/Models/User')
 const { validate, validateAll } = use('Validator')
+const Event = use('Event')
 
 /**
  * Resourceful controller for interacting with users
@@ -69,9 +70,8 @@ class UserController {
 
 
     const newUser = request.only(['username', 'password', 'email'])
-    const user = await User
-      .create(newUser)
-
+    const user = await User.create(newUser)
+    Event.emit('user.store', user)
     return response.redirect(`/users/${ user.id }`)
   }
 
